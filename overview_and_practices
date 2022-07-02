@@ -1,0 +1,124 @@
+Windows Forensics_Registry
+Intro
+	Artefacto: pegadas de atividade deixadas no sistema
+
+        Registro do Windows
+
+                ( Coleção de Bancos de dados que contém dados de configurações:
+                                Hardware, software, info_usuário, Arquivos usados recentemente, App usados, dispositvos conectados)
+
+                consiste em:
+                        Chaves (Keys):
+                        Registry Hive: grupo de chaves, subchaves e valores armazenados em uico arquivo no disco
+                
+                1 Estrutura do registro padrão e Acesso on Machine
+					regedit.exe (Abrir)	
+                        HKey_Current_User (HKCU): Raiz das Info de config do usuario conectado, pastas, cores da telas e configs painel control$
+                        Hkey_HKey_Users (HKU): (Todos os perfis do users carregados activamente);
+                        HKey_Local_Machine (HKLM): info de Config especifica do PC
+                        Hkey_Classes_Root exibição do registro que mistura as info de 2 classes: 
+							HKey_Classes_Root exige mistura de apps projectada para versões anteriores. Alterar config do user interativo
+							devem ser feita em HKey_Classes_Root e Hkey_current_User\Software\Clases
+						HKey_Local_Machine\Software (HKCR) subchave: info sobre o app correcto seja aberto qdo vc abre um arquivo
+						HKey_Local_Machine\Software\classes (HKCR) subchave: config padrão aplicadas a todos users
+						HKEY_CURRENT_USER\Software\Classes: config que substituem as config padrão e se aplica ao user interativo.
+                        Hkey_Current_Config Informações sobre o perfil de hardware usado pelo computador local na inicialização do sistema.
+
+		Accesso ao registro em offline
+		
+			Acessar em C:\Windows\System32\Config
+				
+				1. Padrão (Hkey_Users\Default)
+				2. SAM Hkey_Local_Machine\SAM
+				3. Segurança HKey_Local_Machine\Security
+				4. Software HKey_Local_Machine\Software
+				5. Sistema HKey_Local_Machine\System
+			Hives User_Info
+				localizado em C:\Users\<username>\
+				NTUSER.DAT (HKey_Current_User)
+				USRCLASS.DAT (HKey_Current_User\Software\Classes) localizado em c:\Users\<username>\AppData\Local\Microsoft\windows
+
+			LOG de Transição (Diário)
+	⁃	Actividades e Programas executados recentemente.
+	⁃	cada diário é salvo em .log ex: log do SAM.log no Hives do SAM dir
+	⁃	AmCache is an artifact which stores metadata related to PE execution and program installation on Windows
+						Localização C:\Windows\AppCompat\Programs\Amcache.hve
+			 Backups
+	⁃	oposto do log de transição	
+	⁃	Caso suspeita de alteração ou exclusão de chaves de registro
+	
+		Aquisição de dados
+	⁃	é o processo de criar uma imagem do sistema ou copia dos dados necessários para a realização forenses
+	⁃	na copia do sistema o arquivo %WINDIR%\System32\Config é impossível copiar porque ser restrito. Apenas usando Forensic Apps
+			APPS: KAPE, Autopsy, FTK imager
+				KAPE: Aquisição e Analise. GUI e CLI
+				Autopsy: Aquisição de sistema Live ou Imagem de disco.
+				FTK Imager é semelhante ao Autopsy
+		
+		Visualização do registro do windows
+				
+			App: AccessData Registry Viewer, Eric Zimmerman, registro Explorer, RegRipper
+
+				Access-Registry Viewer: (GUI, load 1 hive apena de cada vez, não transporta diários)
+				Registro Explorer: GUI, usado em DFIR, load many Hives, add data on Diário, Bookmarks
+				RegRipper: GUI usa 1 Hives, gera relatório, não transporta diários 
+		
+		Pratica Forense: Steps
+			1- Informações do Sistema e da conta da Maquina
+				Versões do SO
+					Software\Microsoft\Windows NT\CurrentVersion (Info_Machine)
+				Configuração da maquina e controle de iniciação
+					ControlSet001 - config que maquina inicializou (System\Control001)
+					ControlSet002 - config que maquina ultima conhecida bem (System\Control002)
+					
+				Nome do PC (garantir que estamos a trabalhar na maquina certa)
+					System\CurrentControlSte\Control\ComputerName\ComputerName
+
+				Fuso Horário (ajuda a entender a cronologia dos eventos como decorreram)
+					System\CurrentControlSet\Control\TimeZoneInformation
+			
+				Interface de Redes e redes anteriores
+					System\CurrentControlSet\Services\tcpip\Parameters\Interfaces (Network Actual)
+					Software\Microsoft\windows NT\CurrentVersion\NetworkList\Signatures\Unmanaged
+					Software\Microsoft\Windows NT\CurrentVersion\Networklist\Signatures\Managed
+
+				Programa de Inicialização automática (Autoruns)
+					Incluem info de app ou comandos executados qdo o User faz Logon
+					NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Run
+				NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\RunOnce
+				SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce
+				SOFTWARE\Microsoft\Windows\CurrentVersion\policies\Explorer\Run
+				SOFTWARE\Microsoft\Windows\CurrentVersion\Run
+				Serviços
+					SYSTEM\CurrentControlSet\Services
+
+			2- Hives SAM e Informações de User
+					Info_Users, Login_info, Grupo_info, qts vez o user fez login, last_login, hora_last_login, 					login_failed, ultima_alteração_senha, Expiração de senha, política de senha, dica da senha, grupos 					que_user_fez parte
+					SAM\Domains\Account\Users
+			
+			3 - Arquivos
+				files recentes (Aberto, hora, formato) para cada user
+					tipo de file: NTUSER
+					Registro: NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs (geral formato)
+				NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\RecentDocs\.pdf (especifico formato)
+					MRU (arquivo usado recentemente)
+					
+				3.1 - Arquivos Recente OFFICE
+					NTUSER.DAT\Software\Microsoft\Office\VERSION (Localização office)
+					NTUSER.DAT\Software\Microsoft\Office\15.0\Word (versão office 2013)
+					NTUSER.DAT\Software\Microsoft\Office\VERSION\UserMRU\LiveID_####\FileMRU (office 365 tem ID)
+				3.2 - Abrir/Salvar e ultima visita(na criação de file e salva esse file registro guarda a localização desse 						file)
+						  NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePIDlMRU
+					NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU
+
+			3.3 - Barra de endereço no windows explorer (Identificar doc pesquisado na barra)
+					NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths
+					NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\WordWheelQuery
+
+											
+			4- Directorios (Layout, preferencias)
+					USRCLASS.DAT\Local Settings\Software\Microsoft\Windows\Shell\Bags
+				USRCLASS.DAT\Local Settings\Software\Microsoft\Windows\Shell\BagMRU
+				NTUSER.DAT\Software\Microsoft\Windows\Shell\BagMRU
+				NTUSER.DAT\Software\Microsoft\Windows\Shell\Bags
+				
