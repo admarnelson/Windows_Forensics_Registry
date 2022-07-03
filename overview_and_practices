@@ -2,8 +2,10 @@ Windows Forensics_Registry
 ——————————----------------
 Intro
 	Artefacto: pegadas de atividade deixadas no sistema
-
+	
+	
         Registro do Windows
+	-------------------
 
                 ( Coleção de Bancos de dados que contém dados de configurações:
                                 Hardware, software, info_usuário, Arquivos usados recentemente, App usados, dispositvos conectados)
@@ -11,7 +13,11 @@ Intro
                 consiste em:
                         Chaves (Keys):
                         Registry Hive: grupo de chaves, subchaves e valores armazenados em uico arquivo no disco
-                
+                	Hives are the registry directories and contain the keys
+			keys can contain another keys and values
+			Subkeys are Childs of keys
+			Values are the data stored in the keys
+			
                 1 Estrutura do registro padrão e Acesso on Machine
 					regedit.exe (Abrir)	
                         HKey_Current_User (HKCU): Raiz das Info de config do usuario conectado, pastas, cores da telas e configs painel control$
