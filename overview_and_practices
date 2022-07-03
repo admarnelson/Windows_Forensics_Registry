@@ -1,4 +1,5 @@
 Windows Forensics_Registry
+——————————----------------
 Intro
 	Artefacto: pegadas de atividade deixadas no sistema
 
@@ -107,18 +108,46 @@ Intro
 					NTUSER.DAT\Software\Microsoft\Office\VERSION (Localização office)
 					NTUSER.DAT\Software\Microsoft\Office\15.0\Word (versão office 2013)
 					NTUSER.DAT\Software\Microsoft\Office\VERSION\UserMRU\LiveID_####\FileMRU (office 365 tem ID)
-				3.2 - Abrir/Salvar e ultima visita(na criação de file e salva esse file registro guarda a localização desse 						file)
+					3.1.1 - Abrir/Salvar e ultima visita(na criação de file e salva esse file registro guarda a localização desse 						file)
 						  NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePIDlMRU
 					NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU
 
-			3.3 - Barra de endereço no windows explorer (Identificar doc pesquisado na barra)
+			 3.2 - Barra de endereço no windows explorer (Identificar doc pesquisado na barra)
 					NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\TypedPaths
 					NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\WordWheelQuery
 
 											
-			4- Directorios (Layout, preferencias)
+			4 - Directorios (Layout, preferencias)
 					USRCLASS.DAT\Local Settings\Software\Microsoft\Windows\Shell\Bags
 				USRCLASS.DAT\Local Settings\Software\Microsoft\Windows\Shell\BagMRU
 				NTUSER.DAT\Software\Microsoft\Windows\Shell\BagMRU
 				NTUSER.DAT\Software\Microsoft\Windows\Shell\Bags
 				
+			5 - Aplicativos
+				
+				⁃	Wind track aplicativos iniciados pelo user (hora_run, nºvezes)
+					NTUSER.DAT\Software\Microsoft\Windows\Currentversion\Explorer\UserAssist\{GUID}\Count
+					
+					ShimCache or AppCompatCache (mecanismo para acompanhar a compatibilidade do aplicativo) armazena (name_app, size, last_change)
+						SYSTEM\CurrentControlSet\Control\Session Manager\AppCompatCache
+							app: AppCompatCache Parser
+						AmCache(path_apps, time_inst, hashes SHA1): é um artefacto relacionado ao ShimCache
+							C:\Windows\appcompat\Programs\Amcache.hve
+							Amcache.hve\Root\File\{Volume GUID}\
+				
+					BAM (Background Activity Monitor) guia de actividades dos Apps em background
+					SYSTEM\CurrentControlSet\Services\bam\UserSettings\{SID}
+					DAM (desktop Activity Moderator) optimiza o consumo de energia do divice
+					SYSTEM\CurrentControlSet\Services\dam\UserSettings\{SID}
+	
+				6 - External Device
+						(ID fornecedor, ID do produto, versão)
+						  SYSTEM\CurrentControlSet\Enum\USBSTOR
+					SYSTEM\CurrentControlSet\Enum\USB
+				6.1 - primeira/Ultima vez conectado
+						SYSTEM\CurrentControlSet\Enum\USBSTOR\Ven_Prod_Version\USBSerial#\Properties\{83da6326-97a6-4088-9453-a19231573b29}\####
+					 Aonde #### pode ser alterado por: 0064(Time_first_connection), 00666(time_last_conection), 0067(Last_remove)
+					
+					 6.2 - nome do dispositivo 	
+						SOFTWARE\Microsoft\Windows Portable Devices\Devices
+					
