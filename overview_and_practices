@@ -100,7 +100,8 @@ Intro
 					SYSTEM\CurrentControlSet\Services
 
 			2- Hives SAM e Informações de User
-					Info_Users, Login_info, Grupo_info, qts vez o user fez login, last_login, hora_last_login, 					login_failed, ultima_alteração_senha, Expiração de senha, política de senha, dica da senha, grupos 					que_user_fez parte
+					Info_Users, Login_info, Grupo_info, qts vez o user fez login, last_login, hora_last_login,login_failed, ultima_alteração_senha, 
+					Expiração de senha, política de senha, dica da senha, grupos que_user_fez parte
 					SAM\Domains\Account\Users
 			
 			3 - Arquivos
@@ -114,7 +115,7 @@ Intro
 					NTUSER.DAT\Software\Microsoft\Office\VERSION (Localização office)
 					NTUSER.DAT\Software\Microsoft\Office\15.0\Word (versão office 2013)
 					NTUSER.DAT\Software\Microsoft\Office\VERSION\UserMRU\LiveID_####\FileMRU (office 365 tem ID)
-					3.1.1 - Abrir/Salvar e ultima visita(na criação de file e salva esse file registro guarda a localização desse 						file)
+					3.1.1 - Abrir/Salvar e ultima visita(na criação de file e salva esse file registro guarda a localização desse file)
 						  NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\OpenSavePIDlMRU
 					NTUSER.DAT\Software\Microsoft\Windows\CurrentVersion\Explorer\ComDlg32\LastVisitedPidlMRU
 
@@ -150,8 +151,9 @@ Intro
 						(ID fornecedor, ID do produto, versão)
 						  SYSTEM\CurrentControlSet\Enum\USBSTOR
 					SYSTEM\CurrentControlSet\Enum\USB
+					
 				6.1 - primeira/Ultima vez conectado
-						SYSTEM\CurrentControlSet\Enum\USBSTOR\Ven_Prod_Version\USBSerial#\Properties\{83da6326-97a6-4088-9453-a19231573b29}\####
+					SYSTEM\CurrentControlSet\Enum\USBSTOR\Ven_Prod_Version\USBSerial#\Properties\{83da6326-97a6-4088-9453-a19231573b29}\####
 					 Aonde #### pode ser alterado por: 0064(Time_first_connection), 00666(time_last_conection), 0067(Last_remove)
 					
 					 6.2 - nome do dispositivo 	
